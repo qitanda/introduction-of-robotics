@@ -1,0 +1,27 @@
+function [theta1,theta2,theta3,theta4]=pk_sub2(ksi1,ksi2,p,q,r)
+w1=ksi1(1:3);
+w2=ksi2(1:3);
+if(w1==w2)
+    theta1=pk_sub1(ksi1,p,q);
+    theta2=0;
+    theta3=NaN;
+    theta4=NaN;
+    return
+end
+v=q-r;
+u=p-r;
+alpha=(((w1')*w2)*(w2')*u-w1'*v)/(((w1')*w2)^2-1);
+beta=(((w1')*w2)*(w1')*v-(w2')*u)/(((w1')*w2)^2-1);
+gamma_2=(norm(u)^2-alpha^2-beta^2-2*alpha*beta*(w1')*w2)/((norm(cross(w1,w2)))^2);
+gamma1=abs(real(gamma_2^0.5));
+gamma2=-abs(real(gamma_2^0.5));
+z1=alpha*w1+beta*w2+gamma1*(cross(w1,w2));
+z2=alpha*w1+beta*w2+gamma2*(cross(w1,w2));
+c1=z1+r;
+c2=z2+r;
+[theta1]=pk_sub1(-ksi1,q,c1,r);
+[theta2]=pk_sub1(ksi2,p,c1,r);
+[theta3]=pk_sub1(-ksi1,q,c2,r);
+[theta4]=pk_sub1(ksi2,p,c2,r);
+a=1;
+end
